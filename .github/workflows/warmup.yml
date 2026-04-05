@@ -8,13 +8,16 @@ on:
 jobs:
   warmup:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    
     steps:
-      - name: Install Claude Code
-        run: |
-          npm install -g @anthropic-ai/claude-code
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Send warmup message
-        run: |
-          claude -p "Hi" --dangerously-skip-permissions
-        env:
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
